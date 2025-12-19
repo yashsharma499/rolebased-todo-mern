@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+/* ================================
+   FULL PAGE FIX
+================================ */
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* ================================
+   BASE FONT
+================================ */
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: #ffffff;
+  color: #0f172a; /* slate-900 */
+}
+
+/* ================================
+   ANIMATIONS
+================================ */
+
+/* -------- NORMAL BLOB (KEEP) -------- */
+@keyframes blob {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, -60px) scale(1.1); }
+  66% { transform: translate(-30px, 30px) scale(0.95); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+/* -------- STRONG BLOB (VISIBLE) -------- */
+@keyframes blobStrong {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  30% {
+    transform: translate(80px, -70px) scale(1.18);
+  }
+  60% {
+    transform: translate(-70px, 70px) scale(0.95);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+/* Floating hero card */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-22px) rotate(1.5deg); }
+}
+
+/* Button shimmer */
+@keyframes shimmer {
+  0% { transform: translateX(-120%) skewX(-15deg); }
+  100% { transform: translateX(120%) skewX(-15deg); }
+}
+
+/* Page entry */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Error shake */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+/* Hand wave */
+@keyframes bounceShort {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(14deg); }
+}
+
+/* ================================
+   HELPER CLASSES
+================================ */
+
+/* NORMAL BLOBS */
+.animate-blob {
+  animation: blob 14s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* STRONG / HERO BLOBS */
+.animate-blobStrong {
+  animation: blobStrong 18s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Floating card */
+.animate-float {
+  animation: float 7s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Delays */
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Form / UI */
+.animate-shimmer {
+  animation: shimmer 2.8s linear infinite;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-shake {
+  animation: shake 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+.animate-bounce-short {
+  animation: bounceShort 1.8s ease-in-out infinite;
+}
+
+/* ================================
+   GLOBAL UI TRANSITIONS
+================================ */
+input,
+button,
+a {
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease,
+    border-color 0.25s ease;
+}
+
+/* ================================
+   CUSTOM UTILITIES
+================================ */
+
+/* Tailwind does not support .py-4.5 */
+.py-4\.5 {
+  padding-top: 1.125rem;
+  padding-bottom: 1.125rem;
+}
+
+button {
+  cursor: pointer;
+}
