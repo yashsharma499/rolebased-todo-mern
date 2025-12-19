@@ -10,7 +10,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import UserDashboard from "./pages/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
-import SetPassword from "./pages/SetPassword"; // ✅ NEW
+import SetPassword from "./pages/setPassword"; // ✅ case matches filename
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
@@ -22,7 +22,7 @@ function Layout({ children }) {
   const hideNavbar =
     location.pathname === "/" ||
     location.pathname === "/register" ||
-    location.pathname === "/set-password"; // ✅ hide navbar here too
+    location.pathname === "/set-password";
 
   return (
     <>
@@ -42,7 +42,7 @@ export default function App() {
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            {/* ✅ Invite flow */}
+            {/* Invite flow */}
             <Route path="/set-password" element={<SetPassword />} />
 
             {/* Protected routes */}
