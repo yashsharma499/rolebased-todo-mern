@@ -16,8 +16,7 @@ export const getAllUsers = async (req, res) => {
 };
 
 /* ================================
-   ❌ OLD CREATE USER (NOT USED)
-   (Keep for safety / legacy)
+   ❌ OLD CREATE USER (LEGACY)
 ================================ */
 export const createUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -57,7 +56,7 @@ export const inviteUser = async (req, res) => {
 
     const inviteToken = crypto.randomBytes(32).toString("hex");
 
-    const user = await User.create({
+    await User.create({
       name,
       email,
       password: null,
@@ -67,7 +66,8 @@ export const inviteUser = async (req, res) => {
       inviteExpiry: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
     });
 
-    const inviteLink = `http://localhost:5173/set-password?token=${inviteToken}`;
+    // ✅ FIXED: use frontend URL from env
+    const inviteLink = `${process.env.FRONTEND_URL}/set-password?token=${inviteToken}`;
 
     await sendEmail({
       to: email,
