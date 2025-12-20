@@ -1,6 +1,5 @@
 
 
-
 // import { useEffect, useState } from "react";
 // import { motion, AnimatePresence } from "framer-motion";
 // import {
@@ -32,6 +31,9 @@
 
 //   const [name, setName] = useState("");
 //   const [email, setEmail] = useState("");
+//   const [emailError, setEmailError] = useState(""); // NEW: For email validation error
+//   const [nameError, setNameError] = useState(""); // NEW: For name validation error
+//   const [isSubmitting, setIsSubmitting] = useState(false); // NEW: For loading state
 
 //   useEffect(() => {
 //     fetchAdminData();
@@ -42,6 +44,38 @@
 //     const usersRes = await api.get("/users");
 //     setTodos(todosRes.data);
 //     setUsers(usersRes.data);
+//   };
+
+//   // NEW: Email validation function
+//   const validateEmail = (email) => {
+//     const re = /^\S+@\S+\.\S+$/;
+//     return re.test(email);
+//   };
+
+//   // NEW: Validate form function
+//   const validateForm = () => {
+//     let isValid = true;
+    
+//     // Reset errors
+//     setEmailError("");
+//     setNameError("");
+    
+//     // Validate name
+//     if (!name.trim()) {
+//       setNameError("Name is required");
+//       isValid = false;
+//     }
+    
+//     // Validate email
+//     if (!email.trim()) {
+//       setEmailError("Email is required");
+//       isValid = false;
+//     } else if (!validateEmail(email)) {
+//       setEmailError("Please enter a valid email address");
+//       isValid = false;
+//     }
+    
+//     return isValid;
 //   };
 
 //   const filteredUsers = users.filter(
@@ -73,18 +107,78 @@
 //     fetchAdminData();
 //   };
 
-//   /* ✅ UPDATED: INVITE USER (NO PASSWORD) */
+//   /* ✅ UPDATED: INVITE USER WITH FRONTEND VALIDATION */
 //   const handleAddUser = async (e) => {
 //     e.preventDefault();
+    
+//     // Reset errors
+//     setEmailError("");
+//     setNameError("");
+    
+//     // Validate form
+//     if (!validateForm()) {
+//       return;
+//     }
+    
+//     setIsSubmitting(true);
+    
+//     try {
+//       await api.post("/users/invite", { name, email });
+      
+//       alert("Invite link sent to user's email");
+      
+//       setShowAddUser(false);
+//       setName("");
+//       setEmail("");
+//       setEmailError("");
+//       setNameError("");
+//       fetchAdminData();
+//     } catch (error) {
+//       // Handle backend validation errors
+//       if (error.response?.data?.message) {
+//         const errorMessage = error.response.data.message;
+        
+//         // Check for specific backend errors
+//         if (errorMessage.includes("Invalid email format")) {
+//           setEmailError("Please enter a valid email address");
+//         } else if (errorMessage.includes("User already exists")) {
+//           setEmailError("A user with this email already exists");
+//         } else if (errorMessage.includes("Name and email are required")) {
+//           if (!name.trim()) setNameError("Name is required");
+//           if (!email.trim()) setEmailError("Email is required");
+//         } else {
+//           setEmailError(errorMessage);
+//         }
+//       } else {
+//         setEmailError("Failed to send invitation. Please try again.");
+//       }
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
 
-//     await api.post("/users/invite", { name, email });
+//   // NEW: Handle email input change with validation
+//   const handleEmailChange = (e) => {
+//     const value = e.target.value;
+//     setEmail(value);
+    
+//     // Clear error when user starts typing
+//     if (emailError) {
+//       setEmailError("");
+//     }
+    
+//     // Optional: Real-time validation (uncomment if you want it)
+//     // if (value && !validateEmail(value)) {
+//     //   setEmailError("Please enter a valid email address");
+//     // }
+//   };
 
-//     alert("Invite link sent to user's email");
-
-//     setShowAddUser(false);
-//     setName("");
-//     setEmail("");
-//     fetchAdminData();
+//   // NEW: Handle name input change
+//   const handleNameChange = (e) => {
+//     setName(e.target.value);
+//     if (nameError) {
+//       setNameError("");
+//     }
 //   };
 
 //   return (
@@ -326,36 +420,56 @@
 //             </div>
 
 //             <div className="space-y-4">
-//               <input
-//                 value={name}
-//                 onChange={(e) => setName(e.target.value)}
-//                 placeholder="Full Name"
-//                 className="w-full p-3.5 bg-white/80 backdrop-blur-sm rounded-xl border border-purple-200 focus:bg-white focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all text-slate-800"
-//                 required
-//               />
-//               <input
-//                 value={email}
-//                 onChange={(e) => setEmail(e.target.value)}
-//                 placeholder="Email Address"
-//                 type="email"
-//                 className="w-full p-3.5 bg-white/80 backdrop-blur-sm rounded-xl border border-purple-200 focus:bg-white focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all text-slate-800"
-//                 required
-//               />
+//               <div>
+//                 <input
+//                   value={name}
+//                   onChange={handleNameChange}
+//                   placeholder="Full Name"
+//                   className={`w-full p-3.5 bg-white/80 backdrop-blur-sm rounded-xl border ${
+//                     nameError ? "border-red-300 focus:ring-red-500/20" : "border-purple-200 focus:ring-purple-500/20"
+//                   } focus:bg-white focus:ring-4 focus:border-purple-500 outline-none transition-all text-slate-800`}
+//                   required
+//                 />
+//                 {nameError && (
+//                   <p className="text-red-500 text-sm mt-1 px-1">{nameError}</p>
+//                 )}
+//               </div>
+              
+//               <div>
+//                 <input
+//                   value={email}
+//                   onChange={handleEmailChange}
+//                   placeholder="Email Address"
+//                   type="email"
+//                   className={`w-full p-3.5 bg-white/80 backdrop-blur-sm rounded-xl border ${
+//                     emailError ? "border-red-300 focus:ring-red-500/20" : "border-purple-200 focus:ring-purple-500/20"
+//                   } focus:bg-white focus:ring-4 focus:border-purple-500 outline-none transition-all text-slate-800`}
+//                   required
+//                 />
+//                 {emailError && (
+//                   <p className="text-red-500 text-sm mt-1 px-1">{emailError}</p>
+//                 )}
+//               </div>
 //             </div>
 
 //             <div className="flex justify-end gap-3 pt-4">
 //               <button 
 //                 type="button" 
-//                 onClick={() => setShowAddUser(false)}
+//                 onClick={() => {
+//                   setShowAddUser(false);
+//                   setEmailError("");
+//                   setNameError("");
+//                 }}
 //                 className="px-5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-600 font-medium"
 //               >
 //                 Cancel
 //               </button>
 //               <button
 //                 type="submit"
-//                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-2.5 rounded-xl font-semibold shadow-lg shadow-purple-500/30"
+//                 disabled={isSubmitting}
+//                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-2.5 rounded-xl font-semibold shadow-lg shadow-purple-500/30 disabled:opacity-70 disabled:cursor-not-allowed"
 //               >
-//                 Send Invite
+//                 {isSubmitting ? "Sending..." : "Send Invite"}
 //               </button>
 //             </div>
 //           </form>
@@ -427,9 +541,9 @@ export default function AdminDashboard() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState(""); // NEW: For email validation error
-  const [nameError, setNameError] = useState(""); // NEW: For name validation error
-  const [isSubmitting, setIsSubmitting] = useState(false); // NEW: For loading state
+  const [emailError, setEmailError] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     fetchAdminData();
@@ -442,27 +556,22 @@ export default function AdminDashboard() {
     setUsers(usersRes.data);
   };
 
-  // NEW: Email validation function
   const validateEmail = (email) => {
     const re = /^\S+@\S+\.\S+$/;
     return re.test(email);
   };
 
-  // NEW: Validate form function
   const validateForm = () => {
     let isValid = true;
     
-    // Reset errors
     setEmailError("");
     setNameError("");
     
-    // Validate name
     if (!name.trim()) {
       setNameError("Name is required");
       isValid = false;
     }
     
-    // Validate email
     if (!email.trim()) {
       setEmailError("Email is required");
       isValid = false;
@@ -484,34 +593,83 @@ export default function AdminDashboard() {
     (t) => t.user?._id === selectedUser?._id
   );
 
+  /* ✅ FIXED: Optimistic update for user status */
   const toggleUserStatus = async (user) => {
-    await api.patch(`/users/${user._id}/status`, {
-      status: user.status === "active" ? "suspended" : "active",
-    });
-    fetchAdminData();
+    const newStatus = user.status === "active" ? "suspended" : "active";
+    
+    // Optimistic update: Update UI immediately
+    setUsers(prevUsers =>
+      prevUsers.map(u =>
+        u._id === user._id ? { ...u, status: newStatus } : u
+      )
+    );
+    
+    try {
+      await api.patch(`/users/${user._id}/status`, {
+        status: newStatus,
+      });
+    } catch (error) {
+      // Revert on error
+      setUsers(prevUsers =>
+        prevUsers.map(u =>
+          u._id === user._id ? { ...u, status: user.status } : u
+        )
+      );
+      alert("Failed to update user status");
+    }
   };
 
+  /* ✅ FIXED: Optimistic update for delete todo */
   const handleDeleteTodo = async (id) => {
-    await api.delete(`/todos/${id}`);
-    fetchAdminData();
+    // Optimistic update: Remove from UI immediately
+    setTodos(prevTodos => prevTodos.filter(todo => todo._id !== id));
+    
+    if (selectedUser) {
+      setSelectedUser(prev => ({
+        ...prev,
+        // Also update selectedUser's todos if drawer is open
+      }));
+    }
+    
+    try {
+      await api.delete(`/todos/${id}`);
+    } catch (error) {
+      // Revert on error - refetch data
+      fetchAdminData();
+      alert("Failed to delete todo");
+    }
   };
 
+  /* ✅ FIXED: Optimistic update for edit todo */
   const handleEditTodo = async (id) => {
-    await api.put(`/todos/${id}`, { text: editTodoText });
+    // Optimistic update: Update UI immediately
+    setTodos(prevTodos =>
+      prevTodos.map(todo =>
+        todo._id === id ? { ...todo, text: editTodoText } : todo
+      )
+    );
+    
     setEditTodoId(null);
+    
+    try {
+      await api.put(`/todos/${id}`, { text: editTodoText });
+    } catch (error) {
+      // Revert on error - refetch data
+      fetchAdminData();
+      setEditTodoId(id); // Keep in edit mode
+      alert("Failed to update todo");
+    }
+    
     setEditTodoText("");
-    fetchAdminData();
   };
 
-  /* ✅ UPDATED: INVITE USER WITH FRONTEND VALIDATION */
+  /* ✅ FIXED: Optimistic update for invite user */
   const handleAddUser = async (e) => {
     e.preventDefault();
     
-    // Reset errors
     setEmailError("");
     setNameError("");
     
-    // Validate form
     if (!validateForm()) {
       return;
     }
@@ -528,13 +686,15 @@ export default function AdminDashboard() {
       setEmail("");
       setEmailError("");
       setNameError("");
-      fetchAdminData();
+      
+      // Only fetch users (not todos) since we only added a user
+      const usersRes = await api.get("/users");
+      setUsers(usersRes.data);
+      
     } catch (error) {
-      // Handle backend validation errors
       if (error.response?.data?.message) {
         const errorMessage = error.response.data.message;
         
-        // Check for specific backend errors
         if (errorMessage.includes("Invalid email format")) {
           setEmailError("Please enter a valid email address");
         } else if (errorMessage.includes("User already exists")) {
@@ -553,23 +713,15 @@ export default function AdminDashboard() {
     }
   };
 
-  // NEW: Handle email input change with validation
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
     
-    // Clear error when user starts typing
     if (emailError) {
       setEmailError("");
     }
-    
-    // Optional: Real-time validation (uncomment if you want it)
-    // if (value && !validateEmail(value)) {
-    //   setEmailError("Please enter a valid email address");
-    // }
   };
 
-  // NEW: Handle name input change
   const handleNameChange = (e) => {
     setName(e.target.value);
     if (nameError) {
